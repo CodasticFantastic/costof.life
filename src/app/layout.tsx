@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import RegisterSW from "./pwa-register";
+import { ThemeSwitcher } from "@/theme/ThemeSwitcher";
+import { ThemeInitializer } from "@/theme/themeInitializer.script";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,10 +20,9 @@ export const metadata: Metadata = {
   title: "costof.life",
   description: "Global price tracker",
   manifest: "/manifest.json",
-  themeColor: "#000000", // TODO
   icons: {
-    icon: "/icons/icon-192.png",
-    apple: "/icons/icon-192.png",
+    icon: "/branding/favicon.png",
+    apple: "/branding/favicon.png",
   },
   appleWebApp: {
     capable: true,
@@ -29,17 +31,33 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeInitializer />
+        <RegisterSW />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RegisterSW />
+        <header className="px-4 py-2 flex items-center justify-between">
+          <Image
+            src="/branding/logo-white-(bad-quality).webp"
+            alt="logo"
+            width={124}
+            height={32}
+          />{" "}
+          <ThemeSwitcher variant="icon" />
+        </header>
         {children}
       </body>
     </html>
